@@ -1,5 +1,5 @@
+# Logging features
 import logging
-import sys
 
 # Canvas API Python wrapper
 from canvasapi import Canvas
@@ -13,20 +13,18 @@ def main():
 
     # Set up logging
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
     handler = logging.FileHandler('requests.log')
-    handler.setLevel(logging.INFO)
+    handler.setLevel(logging.DEBUG)
     handler.setFormatter(formatter)
-
     logger = logging.getLogger("canvasapi")
     logger.addHandler(handler)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     # Initialize a new Canvas object
     canvas = Canvas(API_URL, API_KEY)
 
     # Compute the course grade
-    print(compute_course_grade(canvas))
+    compute_course_grade(canvas)
 
 
 if __name__ == "__main__":

@@ -11,8 +11,8 @@ from config import FLAGS
 def compute_course_grade(canvas: Canvas):
     """
     Compute the grade for the Ethical Hacking course.
-    :param canvas: Canvas object
-    :return: grade A-F
+    :param canvas: Canvas object to use for API calls
+    :return: grade A-F, score, maximum score, number of flags found
     """
     # Ethical Hacking course - ID 41678
     try:
@@ -27,40 +27,38 @@ def compute_course_grade(canvas: Canvas):
     # User corresponding to given API key
     user = canvas.get_current_user()
 
-    # Course grade before being ranged A-F
-    score = 0
+    # Flags found and their corresponding scores
+    scores = {}
 
-    # Retrieve the flag assignments with correct submissions and increase the grade accordingly
+    # Retrieve the flag assignments with correct submissions set the scores to flag value
     for assignment in course.get_assignments(include=['submission']):
         match = re.match(r'^Capturing Flag ([a-fA-F0-9]+)', assignment.name)
         if match and assignment.has_submitted_submissions:
-            flag = FLAGS[match.group(1)]
+            flag_name = match.group(1)
+            flag = FLAGS[flag_name]
             match = re.search(r'{(.*?)}', assignment.submission['body'])
             if match:
-                content = match.group(1)
-                if content == flag['value']:
-                    score += assignment.points_possible
+                submission = match.group(1)
+                if submission == flag['value']:
+                    scores[flag_name] = assignment.points_possible
 
-    # Retrieve the hints user has requested and corresponding decrease value
-    hints = {}
+    max_score = sum(scores.values())
+
+    # Retrieve the hints user has requested and decrease the corresponding scores
     for group in user.get_groups():
         match = re.match(r'^Flag ([0-9a-fA-F]{6}) Hint (\d+$)', group.name)
         if match:
-            flag = FLAGS[match.group(1)]
+            flag_name = match.group(1)
             hint_number = int(match.group(2))
-            hint_value = flag['hints'][hint_number - 1]
+            if flag_name in scores:
+                flag = FLAGS[flag_name]
+                hint_value = flag['hints'][hint_number - 1]
+                scores[flag_name] = max(0, scores[flag_name] - hint_value)
 
-            # If hint is the last one, decrease the grade by the whole flag value
-            if hint_number == len(flag['hints']):
-                hints[flag['value']] = hint_value
-            else:
-                hints[flag['value']] = hints.get(flag['value'], 0) + hint_value
+    score = sum(scores.values())
 
-    # Decrease the grade
-    for hint_value in hints.values():
-        score -= hint_value
-
-    return assign_grade(score)
+    print(f"Your grade on the course is currently {assign_grade(score)}. This corresponds to a score of"
+          f" {score}/{max_score}. You submitted {len(scores)} flags.")
 
 
 def assign_grade(score: int):

@@ -1,12 +1,10 @@
+# KTH Canvas API  key
+API_KEY = "8779~j14i49cxqgeYv9W1m4FKqwvxS0pGsJUvPdiqHkeACu2bVRjg1WJzSlfqOUxhaU6w"
+
 # KTH Canvas API URL
 API_URL = "https://canvas.kth.se"
-# API_URL  = "https://canvas.nus.edu.sg"
 
-# KTH CANVAS API KEY
-API_KEY = "8779~j14i49cxqgeYv9W1m4FKqwvxS0pGsJUvPdiqHkeACu2bVRjg1WJzSlfqOUxhaU6w"
-# @&API_KEY = "21450~vtmbwIUrV56pzA4GkSI0qrAwJlFXKuzXbp8mykZN3C3Hhf1j6OoS0JXv2RK76Nxp"
-
-# FLAGS NAME AND CORRESPONDING SOLUTION AND HINTS VALUE
+# Flag names with corresponding solution and hint values
 FLAGS = {
     '10c26e': {
         'value': '10c26efd202307755c7d6265b70c9d1f6ec7f29b6a1569',
