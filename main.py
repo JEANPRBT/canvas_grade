@@ -23,7 +23,7 @@ def main():
     # Initialize a new Canvas object
     canvas = Canvas(API_URL, API_KEY)
 
-    # Compute the course grade
+    # Compute and display the course grade
     compute_course_grade(canvas)
 
 
